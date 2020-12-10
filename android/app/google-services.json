@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "119161752974",
+    "project_id": "bhumi-3303a",
+    "storage_bucket": "bhumi-3303a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119161752974:android:64ca756c9af317ee0c68df",
+        "android_client_info": {
+          "package_name": "com.bhumi.bhumi_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119161752974-jlpqsnqdpvc76ntjbd78u4oaqg0l3tbe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKXxrTJBPtGcU-7J0hDlj0ocQD7oeNL9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119161752974-jlpqsnqdpvc76ntjbd78u4oaqg0l3tbe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
