@@ -2,6 +2,7 @@ import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Inputdecoration.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
 import 'package:bhumi_app/Service/AdditemService.dart';
+import 'package:bhumi_app/Service/ItemService.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:io';
@@ -12,18 +13,21 @@ import 'package:flutter/material.dart';
 import '';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
-class AddItem extends StatefulWidget {
+class ItemUpdate extends StatefulWidget {
+  int rent;
+  String itemid;
+  String oldimageurl;
+  String productname;
+
+  ItemUpdate({this.rent,this.oldimageurl,this.itemid,this.productname,});
   @override
-  _AddItemState createState() => _AddItemState();
+  _ItemUpdateState createState() => _ItemUpdateState();
 }
 
-class _AddItemState extends State<AddItem> {
+class _ItemUpdateState extends State<ItemUpdate> {
   File _image;
 
-  List<String> _colorList = List();
 
-  String _productname;
-  String _produid;
   int _rent;
   String error = '';
   final _formkey = GlobalKey<FormState>();
@@ -120,7 +124,7 @@ class _AddItemState extends State<AddItem> {
                                           }
                                       );
                                     },
-                                    child: _image == null ? Text('Choose Image'):Image.file(
+                                    child: _image == null ? Image.network(widget.oldimageurl,fit: BoxFit.cover,):Image.file(
                                       _image,
                                     ),
                                   ),
@@ -171,26 +175,9 @@ class _AddItemState extends State<AddItem> {
 
                       ),),
                       SizedBox(height: sizeboxheight,),
-                      TextFormField(
-
-                        maxLength: 50,
-                        decoration: inputdecoration.copyWith(labelText: 'Product Title '),
-                        validator: (val) =>
-                        val.isEmpty ? 'Enter The Product Title' : null,
-                        onChanged: (val) => _productname = val,
-                      ),
-
                       SizedBox(height: sizeboxheight,),
                       TextFormField(
-
-
-                        decoration: inputdecoration.copyWith(labelText: 'Product Id '),
-                        validator: (val) =>
-                        val.isEmpty ? 'Enter The Product Id' : null,
-                        onChanged: (val) => _produid = val,
-                      ),SizedBox(height: sizeboxheight,),
-                      TextFormField(
-
+                  initialValue: widget.rent.toString(),
                         keyboardType: TextInputType.number,
                         decoration: inputdecoration.copyWith(labelText: 'Rent '),
                         validator: numbervalidtion,
@@ -206,9 +193,9 @@ class _AddItemState extends State<AddItem> {
                         padding: EdgeInsets.symmetric(horizontal:width *0.09,vertical: height*0.02),
                         shape: StadiumBorder(),
                         child: Text(
-                            'Upload',
+                          'Upload',
                           style: TextStyle(
-                            color: Colors.white
+                              color: Colors.white
                           ),
                         ),
 
@@ -218,28 +205,10 @@ class _AddItemState extends State<AddItem> {
 
 
 
-                            if (_image == null) {
-                              setState(() {
-                                error = 'Choose Image';
-                              });
-                            }
-                            else {
-                                final results =  await AdditemService().additem(_productname, _produid, _rent, _image);
 
-                             if(results ==  'exist'){
-                               print('ss');
-                               setState(() {
-                                 error= 'Exist ProductId';
-                               });
+                              ItemService(itemname: widget.itemid).updateitem(widget.oldimageurl, _rent ??widget.rent , widget.productname, _image);
+                             Navigator.pop(context);
 
-                             }
-                             else{
-                              return  Navigator.pop(context);
-
-
-
-                             }
-                            }
                           }
                         },
                       )

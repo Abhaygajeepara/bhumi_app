@@ -4,7 +4,7 @@ class ItemDetails{
   int rent;
   String url;
   bool active;
-  int ordernumber;
+
   ItemDetails
   ({
     this.productname,
@@ -12,7 +12,7 @@ class ItemDetails{
     this.rent,
     this.url,
     this.active,
-    this.ordernumber
+
   });
 
 }

@@ -1,32 +1,36 @@
 import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Inputdecoration.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
+import 'package:bhumi_app/Screens/ItemPage/ItemHistory.dart';
+import 'package:bhumi_app/Service/Bookinservice.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:uuid/uuid.dart';
 class BookingItem extends StatefulWidget {
   String itemId;
   int rent;
-  int ordernumber;
-  BookingItem({this.itemId,this.rent,this.ordernumber});
+  Map<DateTime,List<dynamic>> events;
+  BookingItem({this.itemId,this.rent,this.events});
   @override
   _BookingItemState createState() => _BookingItemState();
 }
 
 class _BookingItemState extends State<BookingItem> {
     CalendarController _calendarController;
+    String error = '';
   String c_name;
   String dateerror= '';
   String c_number;
   String c_address;
   List<String> _bookingdates = List();
-  Map<DateTime,List<dynamic>> _events;
+
   int discount;
   int advanced;
   int netamount ;
+  bool setvaluetonetamount = false;
   bool autovalid =false;
-
+  int extracharge;
 
   final _formkey =  GlobalKey<FormState>();
     DateTime _date =DateTime.now();
@@ -35,10 +39,11 @@ class _BookingItemState extends State<BookingItem> {
     // TODO: implement initState
     super.initState();
     _calendarController = CalendarController();
-    _events={_date:['ss']};
+
   }
   @override
   Widget build(BuildContext context) {
+
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -80,35 +85,65 @@ class _BookingItemState extends State<BookingItem> {
                   validator:  numbervalidtion,
                 ),
                 SizedBox(height: 10,),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: inputdecoration.copyWith(labelText: "Discount"),
-                  onChanged: (val)=> discount =int.parse(val),
-                  validator:  numbervalidtion,
+                Row(
+
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+
+                        keyboardType: TextInputType.number,
+                        decoration: inputdecoration.copyWith(labelText: "Discount"),
+                        onChanged: (val)=> discount = int.parse(val),
+                        validator:  numbervalidtion,
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Expanded(
+                      child: TextFormField(
+
+                        keyboardType: TextInputType.number,
+                        decoration: inputdecoration.copyWith(labelText: "Extra Charge"),
+                        onChanged: (val)=> extracharge = int.parse(val),
+                        validator:  numbervalidtion,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10,),
 
+                SizedBox(height: 10,),
                 Card(
                   child: TableCalendar(
-                    events: _events,
+                    calendarStyle: CalendarStyle(
+                        selectedColor: commonAssets.selecteddates
+                    ),
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    headerStyle: HeaderStyle(
+                        centerHeaderTitle: true,
+                        formatButtonDecoration: BoxDecoration(
+                            color: commonAssets.appbuttonColor,
+                            borderRadius: BorderRadius.circular(10.0)
+
+                        ),
+                        formatButtonTextStyle: TextStyle(
+                            color: commonAssets.commonbuttontextcolor
+                        )
+                    ),
+                    events: widget.events,
                     calendarController: _calendarController,
                     onDaySelected: (date,events,context){
                       setState(() {
+                        String formatdate = DateFormat('yyyy-MM-dd').format(date);
+                        bool dateexist =_bookingdates.contains(formatdate);
+                        if(!dateexist){_bookingdates.add(formatdate);}
 
-
-                          String formatdate = DateFormat('yyyy-MM-dd').format(date);
-
-
-
-
-                        _bookingdates.add(formatdate);
                       });
                       // _events[_calendarController.selectedDay]=[Colors.green];
                       print(_bookingdates);
                     },
                   ),
                 ),
-                SizedBox(height: 30,),
+                SizedBox(height: 20,),
                 Text(dateerror.toString(),style: TextStyle(fontSize: 16.0,color: Colors.red),),
                 Padding(
                   padding: const EdgeInsets.all(20),
@@ -136,18 +171,23 @@ class _BookingItemState extends State<BookingItem> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 15,),
+                Text(error.toString(),style: TextStyle(
+                  color: Colors.red
+                ),),
+                SizedBox(height: 5,),
                 RaisedButton(
                   padding: EdgeInsets.symmetric(horizontal: width *.2,vertical: height * .02),
                   color: commonAssets.appbuttonColor,
-                  onPressed: (){
+                  onPressed: ()async{
+                    print(widget.itemId);
+                    // return Navigator.push(context, PageRouteBuilder(
+                    //   pageBuilder: (_,__,___)=>ItemHistory(productId: widget.itemId,),
+                    //   transitionDuration: Duration(seconds: 1),
+                    // ));
                     if(_formkey.currentState.validate())
                       {
-                        // print(c_name);
-                        // print(c_number);
-                        // print(c_address);
-                        // print(advanced);
-                        // print(discount);
+
                         if(_bookingdates.length == 0)
                           {
                             setState(() {
@@ -155,13 +195,143 @@ class _BookingItemState extends State<BookingItem> {
                             });
                           }
                         else{
-                          netamount = widget.rent - discount;
-                          print('netamount = $netamount');
+
+                          netamount = widget.rent  + extracharge - discount;
+                          
+                          await BookingService().bookOrder(
+                              widget.itemId, c_name, c_number, c_address, advanced,
+                              discount, netamount, _bookingdates,extracharge,widget.rent);
+                             await showDialog(
+                                context:context,
+                              builder: (BuildContext context){
+                                  return AlertDialog(
+                                    content: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text('Advanced',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                              ),
+                                              Flexible(
+                                                child: Text(advanced.toString()),
+
+                                              ),
+                                            ],
+                                          ),
+                                          Divider(thickness: 3.0,color: Colors.black,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text('Rent',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                              ),
+                                              Flexible(
+                                                child: Text(widget.rent.toString()),
+
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text('Extra Charge',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                              ),
+                                              Flexible(
+                                                child: Text('+ '+extracharge.toString()),
+
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 5,),
+                                          SizedBox(height: 10,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text('Discount',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                              ),
+                                              Flexible(
+                                                child: Text('- '+discount.toString()),
+
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 5,),
+
+                                          Divider(thickness: 3.0,color: Colors.black,),
+                                          SizedBox(height: 5,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text('Net Amount',style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                              ),
+                                              Flexible(
+                                                child: Text(netamount.toString()),
+
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 20,),
+                                          Text('Booking Dates',style: TextStyle(fontWeight: FontWeight.bold),),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal:20),
+                                            child: Card(
+                                              child: Container(
+                                                width: width * .5,
+                                                height: height * 0.25,
+                                                child: ListView.builder(
+                                                    itemCount: _bookingdates.length,
+                                                    itemBuilder: (context,index){
+                                                      return ListTile(
+                                                        title: Text(_bookingdates[index].toString()),
+                                                      );
+                                                    }),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: [
+                                      IconButton(
+                                        icon: Icon(Icons.exit_to_app),
+                                        onPressed: (){
+                                         Navigator.pop(context);
+                                         Navigator.pop(context);
+                                         Navigator.push(context, PageRouteBuilder(
+                                           pageBuilder: (_,__,___)=>ItemHistory(productId: widget.itemId,),
+                                           transitionDuration: Duration(seconds: 0),
+                                         ));
+                                        },
+                                      )
+                                    ],
+                                  );
+                              }
+
+                            ).then((value) {
+                               Navigator.pop(context);
+                               Navigator.push(context, PageRouteBuilder(
+                                 pageBuilder: (_,__,___)=>ItemHistory(productId: widget.itemId,),
+                                 transitionDuration: Duration(seconds: 0),
+                               ));
+                             } );
+
+
                         }
                       }
                     else{
                       setState(() {
                         autovalid = true;
+                        error = 'All Fields Required';
                       });
                     }
                   },
