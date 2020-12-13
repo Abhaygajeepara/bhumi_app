@@ -1,6 +1,7 @@
 import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Loading/cirecularloading.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
+import 'package:bhumi_app/Common/Widget/drawer.dart';
 import 'package:bhumi_app/Screens/Additem/Additem.dart';
 import 'package:bhumi_app/Screens/ItemPage/ItemPage.dart';
 import 'package:bhumi_app/Service/AdditemService.dart';
@@ -20,6 +21,7 @@ class _HomeState extends State<Home> {
     final width = MediaQuery.of(context).size.width;
 
     final height = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: BasicAppbarwithButton(IconButton(
         onPressed: ()async{
@@ -39,10 +41,12 @@ class _HomeState extends State<Home> {
         builder: (context,itemsnapshot){
             if(itemsnapshot.hasData){
               final localdata = itemsnapshot.data.docs;
+
               return ListView.builder(
                   itemExtent: height * .3,
                   itemCount: localdata.length,
                   itemBuilder:(context,index){
+                    bool active = localdata[index].data()['active'];
                     return Card(
 
 
@@ -93,9 +97,16 @@ class _HomeState extends State<Home> {
                                         fontSize: 15.0
                                     ),
                                   ),
+                                   Switch(
+                                    value: localdata[index].data()['active'],
+                                    onChanged: (val)async{
+                                      await ItemService(itemname: localdata[index].data()['ProductId']).activeitem(active);
+                                    },
+                                  ),
                                 ],
                               ),
-                            )
+                            ),
+
                           ],
                         ),
 
@@ -111,7 +122,9 @@ class _HomeState extends State<Home> {
               return CircularLoading();
             }
         }
-      )
+      ),
+      drawer: AppDrawerLocal(),
+
     );
   }
 }
