@@ -1,5 +1,7 @@
 import 'package:bhumi_app/Screens/Home.dart';
+import 'package:bhumi_app/Screens/Income/income.dart';
 import 'package:bhumi_app/Screens/ItemPage/DisableItem.dart';
+import 'package:bhumi_app/Service/Auth/LoginAuto.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawerLocal extends StatefulWidget {
@@ -13,31 +15,16 @@ class _AppDrawerLocalState extends State<AppDrawerLocal> {
     return Drawer(
       child: ListView(
         children: [
-          ListTile(
-            onTap: ()async{
-              Navigator.pop(context);
-             return await Navigator.push(context, PageRouteBuilder(
-                  pageBuilder: (_,__,___) => Home(),
-                  transitionDuration: Duration(seconds: 0)
 
-              ));
-            },
-              title: Row(
-                children: <Widget>[
-                  Icon(Icons.home),
-                  SizedBox(width: 20,),
-                  Text('Home')
-                ],
-              )
-          ),
           ListTile(
               onTap: ()async{
                 Navigator.pop(context);
-               return await Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (_,__,___) => DisableItem(),
-                    transitionDuration: Duration(seconds: 0)
+                return    await Navigator.of(context).pushNamedAndRemoveUntil(
+                    "disableitem",
+                        (route) => route.isCurrent && route.settings.name == "disableitem"
+                        ? false
+                        : true);
 
-                ));
               },
               title: Row(
                 children: <Widget>[
@@ -50,17 +37,52 @@ class _AppDrawerLocalState extends State<AppDrawerLocal> {
           ListTile(
               onTap: ()async{
                 Navigator.pop(context);
-                return await Navigator.push(context, PageRouteBuilder(
-                    pageBuilder: (_,__,___) => DisableItem(),
-                    transitionDuration: Duration(seconds: 0)
+                return    await Navigator.of(context).pushNamedAndRemoveUntil(
+                    "allhistory",
+                        (route) => route.isCurrent && route.settings.name == "allhistory"
+                        ? false
+                        : true);
 
-                ));
+              },
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.history),
+                  SizedBox(width: 20,),
+                  Text('History')
+                ],
+              )
+          ),
+
+          ListTile(
+              onTap: ()async{
+                Navigator.pop(context);
+                return  Navigator.of(context).pushNamedAndRemoveUntil(
+                    "income",
+                        (route) => route.isCurrent && route.settings.name == "income"
+                        ? false
+                        : true);
               },
               title: Row(
                 children: <Widget>[
                   Icon(Icons.account_balance),
                   SizedBox(width: 20,),
-                  Text('Disable Item')
+                  Text('Income')
+                ],
+              )
+          ),
+          ListTile(
+              onTap: ()async{
+
+                Navigator.pop(context);
+                LogInAndSignIn().signouts();
+
+
+              },
+              title: Row(
+                children: <Widget>[
+                  Icon(Icons.exit_to_app),
+                  SizedBox(width: 20,),
+                  Text('Log Out')
                 ],
               )
           ),

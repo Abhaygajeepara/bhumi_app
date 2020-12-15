@@ -1,40 +1,107 @@
 import 'package:bhumi_app/Screens/Calender.dart';
+import 'package:bhumi_app/Screens/History/History.dart';
 import 'package:bhumi_app/Screens/Home.dart';
+import 'package:bhumi_app/Screens/Income/income.dart';
+import 'package:bhumi_app/Screens/ItemPage/DisableItem.dart';
 import 'package:bhumi_app/Screens/ItemPage/ItemPage.dart';
 import 'package:bhumi_app/Screens/ItemPage/booking.dart';
+import 'package:bhumi_app/Service/Auth/LoginAuto.dart';
 import 'package:bhumi_app/Wrapper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // Workmanager.initialize(
+  //
+  //   //
+  //     configs,
+  //
+  //
+  //     isInDebugMode: true
+  // );
+  // Periodic task registration
+  // Workmanager.registerOneOffTask(
+  //   "2",
+  //
+  //
+  //   "simplePeriodicTask",
+  //
+  // );
   runApp(MyApp());
 
 }
+// Future configs()async{
+//   Workmanager.executeTask((task, inputData)async {
+//     tz.initializeTimeZones();
+//     var locations = tz.timeZoneDatabase.locations;
+//     var flutterLocalNotificationsPlugin;
+//     final NotificationAppLaunchDetails notificationAppLaunchDetails =
+//     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+//
+//     const AndroidInitializationSettings initializationSettingsAndroid =
+//     AndroidInitializationSettings('iconapp');
+//
+//
+//
+//
+//     final InitializationSettings initializationSettings = InitializationSettings(
+//       android: initializationSettingsAndroid,
+//     );
+//     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+//         onSelectNotification: 's');
+//     var androidnotificationdetails = new AndroidNotificationDetails("Parin", 'Parin', 'Today Order');
+//     var generalNotificationDetails = new NotificationDetails(android: androidnotificationdetails);
+//     //flutterLocalNotificationsPlugin.show(0, "Parin", 'Nothing', generalNotificationDetails,payload: 'Parin');
+//     await flutterLocalNotificationsPlugin.zonedSchedule(
+//         0,
+//         'scheduled title',
+//         'scheduled body',
+//         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+//         const NotificationDetails(
+//             android: AndroidNotificationDetails('your channel id',
+//                 'your channel name', 'your channel description')),
+//         androidAllowWhileIdle: true,
+//         uiLocalNotificationDateInterpretation:
+//         UILocalNotificationDateInterpretation.absoluteTime);
+//     return Future.value(true);
+//   });
 
+// }
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/' :(context) => Wrapper(),
-        '/home' :(context) => Home(),
-        '/item' :(context) => ItemPage(),
-        'booking' :(context) => BookingItem()
+    return StreamProvider.value(
+      value: LogInAndSignIn().USERDATA,
+      child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/' :(context) => Wrapper(),
+          'home' :(context) => Home(),
+          'item' :(context) => ItemPage(),
+          'booking' :(context) => BookingItem(),
+          'disableitem':(context)=>DisableItem(),
+          'income':(context)=>Income(),
+            'allhistory':(context)=>AllHistory(),
 
-      },
-      title: 'Flutter Demo',
-      theme: ThemeData(
+        },
+        title: 'Flutter Demo',
+        theme: ThemeData(
 
-        primarySwatch: Colors.blue,
+          primarySwatch: Colors.blue,
 
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+
       ),
-
     );
   }
 }

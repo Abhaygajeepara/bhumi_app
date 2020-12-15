@@ -3,6 +3,7 @@ import 'package:bhumi_app/Common/Inputdecoration.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
 import 'package:bhumi_app/Screens/ItemPage/ItemHistory.dart';
 import 'package:bhumi_app/Service/Bookinservice.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -24,7 +25,7 @@ class _BookingItemState extends State<BookingItem> {
   String c_number;
   String c_address;
   List<String> _bookingdates = List();
-
+String description;
   int discount;
   int advanced;
   int netamount ;
@@ -197,10 +198,13 @@ class _BookingItemState extends State<BookingItem> {
                         else{
 
                           netamount = widget.rent  + extracharge - discount;
-                          
+                          DateTime  convet = DateTime.parse(_bookingdates[0]);
+                          DateTime pickupdate = DateTime(convet.year,convet.month,convet.day,0,0,0);
+                          Timestamp pickup  = Timestamp.fromDate(pickupdate);
+
                           await BookingService().bookOrder(
                               widget.itemId, c_name, c_number, c_address, advanced,
-                              discount, netamount, _bookingdates,extracharge,widget.rent);
+                              discount, netamount, _bookingdates,extracharge,widget.rent,pickup);
                              await showDialog(
                                 context:context,
                               builder: (BuildContext context){

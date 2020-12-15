@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bhumi_app/Model/ItemDetail.dart';
+import 'package:bhumi_app/Model/ItemDetail.dart';
 import 'package:bhumi_app/Model/ItemHistoryModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -16,14 +17,30 @@ class ItemService {
       .collection('Order');
 
 
-  Stream<QuerySnapshot> get ITEMDATA {
-    return _reference.where('active', isEqualTo: true).snapshots();
+  Stream<List<ItemDetails>> get ITEMDATA {
+    return _reference.where('active', isEqualTo: true).snapshots().map((_itemDetails));
   }
-  Stream<QuerySnapshot> get ITEMDATADIASBLE {
-    return _reference.where('active', isEqualTo: false).snapshots();
+  Stream<List<ItemDetails>> get ITEMDATADIASBLE {
+    return _reference.where('active', isEqualTo: false).snapshots().map((_itemDetails));
   }
 
-  ItemDetails itemDetails(DocumentSnapshot snapshot) {
+  List<ItemDetails> _itemDetails(QuerySnapshot snapshotdoc){
+    return snapshotdoc.docs.map((e){
+     return ItemDetails(
+        productname: e.data()['Product'],
+        productid: e.data()['ProductId'],
+        rent: e.data()['Rent'],
+        url: e.data()['Image'],
+        active: e.data()['active'],
+
+
+      );
+
+    }).toList();
+
+  }
+
+  ItemDetails singleitemDetails(DocumentSnapshot snapshot) {
     return snapshot != null ?
     ItemDetails(
       productname: snapshot.data()['Product'],
@@ -37,7 +54,7 @@ class ItemService {
   }
 
   Stream<ItemDetails> get ItemDETAILS {
-    return _reference.doc(itemname).snapshots().map((itemDetails));
+    return _reference.doc(itemname).snapshots().map((singleitemDetails));
   }
 
   Future deleteItem() async {
@@ -102,6 +119,7 @@ class ItemService {
   }
 
 
+
   List<ItemHistoryModel> _itemhistory(QuerySnapshot snapshot) {
     return snapshot.docs.map((e) {
       return ItemHistoryModel(
@@ -114,7 +132,10 @@ class ItemService {
           netrent: e.data()['NetAmount'],
           datelist: List.from(e.data()['BookedDates']),
           rentold: e.data()['RentOld'],
-          extracharge: e.data()['ExtraCharge']
+          extracharge: e.data()['ExtraCharge'],
+          bookingdate:e.data()['Date'],
+          compeleteorder:e.data()['CompleteOrder'],
+          orderIDtrack:e.id
 
       );
     }).toList();
@@ -130,5 +151,15 @@ class ItemService {
       return null;
     }
   }
+  Stream<List<ItemHistoryModel>> get HISTORY {
+    try {
+      return _orderreference.orderBy('Date', descending: true).snapshots().map(_itemhistory);
+    }
+    catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
 
 }

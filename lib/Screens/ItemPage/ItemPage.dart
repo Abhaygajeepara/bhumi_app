@@ -32,7 +32,7 @@ class _ItemPageState extends State<ItemPage> {
     super.initState();
     _calendarController = CalendarController();
     _events = {};
-    getdate();
+
   }
   Future<Map<DateTime,List<dynamic>>> getdate()async{
 
@@ -51,6 +51,7 @@ class _ItemPageState extends State<ItemPage> {
   }
   @override
   Widget build(BuildContext context) {
+    getdate();
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     if(widget.item == null || widget.item == ''){
@@ -214,17 +215,17 @@ class _ItemPageState extends State<ItemPage> {
                             )
                           ),
                           events: _events,
-                          onDaySelected: (date,events,context){
-                            setState(() {
-                              _events[_calendarController.selectedDay]=[Colors.green];
-                            });
-                          },
+                          // onDaySelected: (date,events,context){
+                          //   setState(() {
+                          //     _events[_calendarController.selectedDay]=[Colors.green];
+                          //   });
+                          // },
                           calendarController: _calendarController,
                         ),
                       ),
                     ),
                     SizedBox(height: 20,),
-                    RaisedButton(
+                  datas.active ?  RaisedButton(
                       padding: EdgeInsets.symmetric(horizontal: width * 0.2,vertical: height * 0.02),
                       shape: StadiumBorder(),
                       onPressed: (){
@@ -241,7 +242,7 @@ class _ItemPageState extends State<ItemPage> {
                           color: commonAssets.commonbuttontextcolor
                         ),
                       ),
-                    )
+                    ):Text('This Item Is Disable Now',style: TextStyle(color: commonAssets.error,fontSize: 16.0),),
                   ],
                 ),
               );

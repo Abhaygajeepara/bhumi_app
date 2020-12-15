@@ -8,6 +8,7 @@ class commonAssets{
   static Color circularLoading = Colors.white;
   static Color circularLoadingbackgroud = Colors.black;
   static Color selecteddates = Colors.blue;
+  static Color error = Colors.red;
 
 
 }

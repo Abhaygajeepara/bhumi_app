@@ -18,3 +18,15 @@ Widget  BasicAppbarwithButton(Widget button){
   );
 
 }
+Widget  BasicAppbarwithTwoButton(Widget button1,Widget button2){
+  return AppBar(
+    title: Text(commonAssets.name),
+    backgroundColor: commonAssets.appColors,
+    actions: [
+      button1,
+      SizedBox(width: 5,),
+      button2
+    ],
+  );
+
+}

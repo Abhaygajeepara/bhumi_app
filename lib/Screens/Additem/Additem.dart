@@ -1,5 +1,6 @@
 import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Inputdecoration.dart';
+import 'package:bhumi_app/Common/Loading/cirecularloading.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
 import 'package:bhumi_app/Service/AdditemService.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _AddItemState extends State<AddItem> {
   String _productname;
   String _produid;
   int _rent;
+  bool loading  = false ;
   String error = '';
   final _formkey = GlobalKey<FormState>();
   double sizeboxheight = 15.0;
@@ -63,7 +65,7 @@ class _AddItemState extends State<AddItem> {
 
     return Scaffold(
         appBar: BasicAppbar(),
-        body: SingleChildScrollView(
+        body: loading ? CircularLoading(): SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -173,7 +175,7 @@ class _AddItemState extends State<AddItem> {
                       SizedBox(height: sizeboxheight,),
                       TextFormField(
 
-                        maxLength: 50,
+                        maxLength: 30,
                         decoration: inputdecoration.copyWith(labelText: 'Product Title '),
                         validator: (val) =>
                         val.isEmpty ? 'Enter The Product Title' : null,
@@ -183,7 +185,7 @@ class _AddItemState extends State<AddItem> {
                       SizedBox(height: sizeboxheight,),
                       TextFormField(
 
-
+                        maxLength: 10,
                         decoration: inputdecoration.copyWith(labelText: 'Product Id '),
                         validator: (val) =>
                         val.isEmpty ? 'Enter The Product Id' : null,
@@ -225,11 +227,14 @@ class _AddItemState extends State<AddItem> {
                             }
                             else {
                                 final results =  await AdditemService().additem(_productname, _produid, _rent, _image);
-
+                              setState(() {
+                                loading = true;
+                              });
                              if(results ==  'exist'){
                                print('ss');
                                setState(() {
                                  error= 'Exist ProductId';
+                                 loading = false;
                                });
 
                              }
