@@ -8,7 +8,7 @@ class AdditemService{
 
   final CollectionReference _itemrefrence = FirebaseFirestore.instance.collection('Item');
 
-  Future additem(String productname,String productid,int   rent,File image) async{
+  Future additem(String productname,String productid,int   rent,File image,List<String> desc) async{
 
     String url ;
     try{
@@ -29,6 +29,7 @@ class AdditemService{
                 'Rent':rent,
                 'Image':url,
                 'active':true,
+                'Description':FieldValue.arrayUnion(desc)
 
               });
 

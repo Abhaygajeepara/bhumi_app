@@ -21,14 +21,16 @@ class AddItem extends StatefulWidget {
 class _AddItemState extends State<AddItem> {
   File _image;
 
-  List<String> _colorList = List();
+  List<String> descriptionlist = List();
 
   String _productname;
   String _produid;
   int _rent;
+  String description;
   bool loading  = false ;
   String error = '';
   final _formkey = GlobalKey<FormState>();
+  final descriptionkey = GlobalKey<FormState>();
   double sizeboxheight = 15.0;
   double sizeboxwidth = 10.0;
 
@@ -175,7 +177,7 @@ class _AddItemState extends State<AddItem> {
                       SizedBox(height: sizeboxheight,),
                       TextFormField(
 
-                        maxLength: 30,
+                        maxLength: 40,
                         decoration: inputdecoration.copyWith(labelText: 'Product Title '),
                         validator: (val) =>
                         val.isEmpty ? 'Enter The Product Title' : null,
@@ -186,9 +188,9 @@ class _AddItemState extends State<AddItem> {
                       TextFormField(
 
                         maxLength: 10,
-                        decoration: inputdecoration.copyWith(labelText: 'Product Id '),
+                        decoration: inputdecoration.copyWith(labelText: 'Design Id '),
                         validator: (val) =>
-                        val.isEmpty ? 'Enter The Product Id' : null,
+                        val.isEmpty ? 'Enter The Design Id' : null,
                         onChanged: (val) => _produid = val,
                       ),SizedBox(height: sizeboxheight,),
                       TextFormField(
@@ -202,6 +204,92 @@ class _AddItemState extends State<AddItem> {
 
 
 
+                      SizedBox(height: sizeboxheight,),
+                      Container(
+
+                        decoration: BoxDecoration(
+                            color: containerColor,
+                            border: Border(
+                              top: BorderSide(color: Colors.black,width: 0.1),
+                              bottom: BorderSide(color: Colors.black,width: 0.1),
+                              right: BorderSide(color: Colors.black,width: 0.1),
+                              left: BorderSide(color: Colors.black,width: 0.1),
+                            )
+                        ),
+                        height: 250,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Form(
+                            key: descriptionkey,
+                            child: Column(
+                              children: [
+                                Text('Description',style: TextStyle(fontWeight: FontWeight.bold),),
+                                SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: TextFormField(
+                                        decoration: inputdecoration.copyWith(labelText: 'Details',),
+                                        validator: (val) =>
+                                        val.isEmpty ? 'Enter The Details' : null,
+                                        onChanged: (val) => description = val,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () {
+                                          if (descriptionkey.currentState.validate()) {
+                                            setState(() {
+                                              descriptionlist.add(description);
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount: descriptionlist.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (BuildContext, index) {
+                                        List<String> _reverseddetailslist =
+                                        descriptionlist.reversed.toList();
+                                        return ListTile(
+                                            title: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                      _reverseddetailslist[index].toString()
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: IconButton(
+                                                    icon: Icon(Icons.cancel),
+                                                    onPressed: (){
+
+                                                      setState(() {
+
+                                                        int deleteindex = descriptionlist.length-1 -index;
+
+                                                        descriptionlist.removeAt(deleteindex);
+                                                      });
+
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        );
+                                      }),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: sizeboxheight,),
 
                       RaisedButton(
@@ -225,8 +313,13 @@ class _AddItemState extends State<AddItem> {
                                 error = 'Choose Image';
                               });
                             }
+                            else if(descriptionlist.length ==0){
+                              setState(() {
+                                error = 'Enter The Description';
+                              });
+                            }
                             else {
-                                final results =  await AdditemService().additem(_productname, _produid, _rent, _image);
+                                final results =  await AdditemService().additem(_productname, _produid, _rent, _image,descriptionlist);
                               setState(() {
                                 loading = true;
                               });

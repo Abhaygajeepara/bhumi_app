@@ -19,7 +19,7 @@ class ItemUpdate extends StatefulWidget {
   String oldimageurl;
   String productname;
 
-  ItemUpdate({this.rent,this.oldimageurl,this.itemid,this.productname,});
+  ItemUpdate({this.rent,this.oldimageurl,this.itemid,this.productname});
   @override
   _ItemUpdateState createState() => _ItemUpdateState();
 }
@@ -27,7 +27,8 @@ class ItemUpdate extends StatefulWidget {
 class _ItemUpdateState extends State<ItemUpdate> {
   File _image;
 
-
+  final descriptionlistkey = GlobalKey<FormState>();
+  String descriptionlist;
   int _rent;
   String error = '';
   final _formkey = GlobalKey<FormState>();

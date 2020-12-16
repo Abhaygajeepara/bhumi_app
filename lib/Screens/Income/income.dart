@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Inputdecoration.dart';
 import 'package:bhumi_app/Common/Loading/cirecularloading.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
@@ -19,10 +20,11 @@ class _IncomeState extends State<Income> {
   final _formkey = GlobalKey<FormState>();
   Timestamp start;
   Timestamp end;
-  bool monthoryear = true;
+  bool ismonth = true;
   DateTime now = DateTime.now();
   int currentmonth;
   int currentyear;
+  bool year = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -39,21 +41,28 @@ class _IncomeState extends State<Income> {
   Future income(int month ,int year)async{
 
 
-    if(monthoryear)
+    if(ismonth)
       {
 
-        int lastday =  NumberOfDay().totalDays(year, month);
-          print(lastday);
-        start =  Timestamp.fromDate(DateTime(year,month,0,0,0,0));
-        end =  Timestamp.fromDate(DateTime(year,month,lastday,23,59,59));
+
+
+       setState(() {
+         int lastday =  NumberOfDay().totalDays(year, month);
+         start =  Timestamp.fromDate(DateTime(year,month,0,0,0,0));
+         end =  Timestamp.fromDate(DateTime(year,month,lastday,23,59,59));
+       });
 
       }
     else{
       DateTime now = DateTime.now();
-      int lastday = await NumberOfDay().totalDays(now.year, now.month);
 
-      start =  Timestamp.fromDate(DateTime(now.year,1,1));
-      end = await Timestamp.fromDate(DateTime(now.year,12,lastday,23,59,59));
+
+
+     setState(() {
+       int lastday =  NumberOfDay().totalDays(now.year, now.month);
+       start =  Timestamp.fromDate(DateTime(year,1,1));
+       end =  Timestamp.fromDate(DateTime(year,12,lastday,23,59,59));
+     });
 
 
     }
@@ -65,6 +74,7 @@ class _IncomeState extends State<Income> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     income(currentmonth,currentyear);
+
     return Scaffold(
       appBar: BasicAppbar(),
       body: StreamBuilder<List<ItemHistoryModel>>(
@@ -75,8 +85,10 @@ class _IncomeState extends State<Income> {
                 if(historysanp.hasData){
                   List<ItemHistoryModel> datas = historysanp.data;
                     int lengthdoc = datas.length;
+
                     for(var i =0;i<lengthdoc;i++){
                       profit =  profit + datas[i].netrent;
+
                     }
                   return Column(
                     children: [
@@ -123,6 +135,26 @@ class _IncomeState extends State<Income> {
                                 ),
                               ),
                               SizedBox(width: 10,),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Checkbox(
+                                      value: ismonth,
+                                      onChanged: (val){
+                                        setState(() {
+                                          ismonth = !ismonth;
+                                        });
+
+                                      },
+                                      activeColor: commonAssets.appbuttonColor,
+                                      checkColor: commonAssets.commonbuttontextcolor,
+
+                                    ),
+                                    Text('Month')
+                                  ],
+                                )
+
+                              )
 
                             ],
                           ),
@@ -219,7 +251,7 @@ class _IncomeState extends State<Income> {
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Flexible(
-                                                          child: Text('ProductId',style: TextStyle(fontWeight: FontWeight.bold),),
+                                                          child: Text('DesignId',style: TextStyle(fontWeight: FontWeight.bold),),
 
                                                         ),
                                                         Flexible(

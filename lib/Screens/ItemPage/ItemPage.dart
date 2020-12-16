@@ -2,6 +2,7 @@ import 'package:bhumi_app/Common/Common.dart';
 import 'package:bhumi_app/Common/Loading/cirecularloading.dart';
 import 'package:bhumi_app/Common/Widget/Appbar.dart';
 import 'package:bhumi_app/Model/ItemDetail.dart';
+import 'package:bhumi_app/Screens/ItemPage/Description/Description.dart';
 import 'package:bhumi_app/Screens/ItemPage/Imageview.dart';
 import 'package:bhumi_app/Screens/ItemPage/ItemHistory.dart';
 import 'package:bhumi_app/Screens/ItemPage/Update/ItemUpdate.dart';
@@ -103,6 +104,7 @@ class _ItemPageState extends State<ItemPage> {
           builder: (context,itemData){
             if(itemData.hasData){
               ItemDetails datas = itemData.data;
+              print(datas.description);
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -151,6 +153,17 @@ class _ItemPageState extends State<ItemPage> {
                             color: commonAssets.appbuttonColor,
                             onPressed: (){
                               return Navigator.push(context, PageRouteBuilder(
+                                  pageBuilder: (_,__,___) => Description(item: widget.item,),
+                                  transitionDuration: Duration(seconds: 0)
+                              ));
+                            },
+                            child: Icon(Icons.description,color: commonAssets.commonbuttontextcolor,),
+                          ),
+                          RaisedButton(
+                            shape: StadiumBorder(),
+                            color: commonAssets.appbuttonColor,
+                            onPressed: (){
+                              return Navigator.push(context, PageRouteBuilder(
                                   pageBuilder: (_,__,___) => ItemHistory(productId: widget.item,),
                                   transitionDuration: Duration(seconds: 0)
                               ));
@@ -161,7 +174,7 @@ class _ItemPageState extends State<ItemPage> {
                         ],
                       ),
                     ),
-
+                    SizedBox(height: 10,),
                     Center(child: Text("Rent",style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),)),
                     SizedBox(height: 5,),
                     Center(child: SelectableText(datas.rent.toString(),style: TextStyle(fontSize: 16.0,))),
@@ -172,7 +185,7 @@ class _ItemPageState extends State<ItemPage> {
                         children: [
                           Text("ProductName",style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
 
-                          Text("ProductId",style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),)
+                          Text("Design Id",style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),)
 
                         ],
                       ),

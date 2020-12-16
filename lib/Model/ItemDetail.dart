@@ -4,6 +4,7 @@ class ItemDetails{
   int rent;
   String url;
   bool active;
+  List<String> description;
 
   ItemDetails
   ({
@@ -12,6 +13,7 @@ class ItemDetails{
     this.rent,
     this.url,
     this.active,
+    this.description
 
   });
 

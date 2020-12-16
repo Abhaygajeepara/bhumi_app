@@ -13,10 +13,16 @@ class _LogInState extends State<LogIn> {
     String error = '';
    String email ;
    String password ;
+    bool _vision = true;
    final _loginformkey = GlobalKey<FormState>();
 
   @override
-
+  void _visibility(){
+    setState(() {
+      print(_vision);
+      _vision = ! _vision;
+    });
+  }
   Widget build(BuildContext context) {
 // print('$error');
     final width = MediaQuery.of(context).size.width;
@@ -33,19 +39,19 @@ class _LogInState extends State<LogIn> {
                 Text(
                   commonAssets.name.toString(),
                   style: TextStyle(
-                    color:commonAssets.appColors,
-                    fontSize: 25.0,
+                    color:Colors.blue,
+                    fontSize: 35.0,
                     fontWeight: FontWeight.w500
 
                   ),
                 ),
 
-                  SizedBox(height: 10,),
+                  SizedBox(height: 20,),
                   Text(
                       'Log In',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize:22.0,
+                      fontSize:30.0,
                       fontWeight: FontWeight.w500,
 
                     ),
@@ -73,7 +79,17 @@ class _LogInState extends State<LogIn> {
                         ),
                         SizedBox(height:20,),
                         TextFormField(
-                          decoration: inputdecoration.copyWith(labelText: 'Password'),
+                          obscureText: _vision,
+                          decoration: inputdecoration.copyWith(labelText: 'Password',suffixIcon: IconButton(
+                            onPressed:_visibility,
+                            icon:_vision == true ? Icon(Icons.visibility_off,color:  Colors.black,):Icon(Icons.visibility,color: Colors.black),),
+                            errorStyle: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.red,
+
+
+                            ),),
                           validator: (val) => val.isEmpty ?'Enter The Password':null,
                           onChanged: (val)=> password =val,
 

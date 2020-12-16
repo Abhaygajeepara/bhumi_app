@@ -12,7 +12,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="bhumi_app"
+        android:label="Parin Couture"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -9,6 +9,8 @@ class commonAssets{
   static Color circularLoadingbackgroud = Colors.black;
   static Color selecteddates = Colors.blue;
   static Color error = Colors.red;
+  static Color appnamecolor = Colors.red;
+
 
 
 }

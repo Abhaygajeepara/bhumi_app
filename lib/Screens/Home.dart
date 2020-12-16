@@ -5,7 +5,8 @@ import 'package:bhumi_app/Common/Widget/Appbar.dart';
 import 'package:bhumi_app/Common/Widget/drawer.dart';
 import 'package:bhumi_app/Model/ItemDetail.dart';
 import 'package:bhumi_app/Model/ItemHistoryModel.dart';
-import 'package:bhumi_app/Screens/Additem/Additem.dart';
+import 'package:bhumi_app/Screens/ItemPage/Additem/Additem.dart';
+
 import 'package:bhumi_app/Screens/ItemPage/ItemPage.dart';
 import 'package:bhumi_app/Screens/Today/Todayorder.dart';
 import 'package:bhumi_app/Service/AdditemService.dart';

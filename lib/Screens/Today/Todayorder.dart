@@ -27,6 +27,7 @@ class _TodayOrderState extends State<TodayOrder> {
     DateTime endtoday = DateTime(now.year,now.month,now.day,11,59,00);
     start = Timestamp.fromDate(starttoday);
     end = Timestamp.fromDate(endtoday);
+    print(start);
   }
 
   int subtactlocal(int rent ,int extra){
@@ -39,7 +40,7 @@ class _TodayOrderState extends State<TodayOrder> {
 
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
+    print(start.toDate().toString());
     return Scaffold(
       appBar: BasicAppbar(),
       body: StreamBuilder<List<ItemHistoryModel>>(
@@ -127,7 +128,7 @@ class _TodayOrderState extends State<TodayOrder> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
-                                    child: Text('ProductId',style: TextStyle(fontWeight: FontWeight.bold),),
+                                    child: Text('Design Id',style: TextStyle(fontWeight: FontWeight.bold),),
 
                                   ),
                                   Flexible(
@@ -353,7 +354,7 @@ class _TodayOrderState extends State<TodayOrder> {
                     );
                   }
                   else{
-                    return CircularLoading();
+                    return Text('');
                   }
                }
              );

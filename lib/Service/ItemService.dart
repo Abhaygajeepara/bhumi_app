@@ -33,7 +33,6 @@ class ItemService {
         url: e.data()['Image'],
         active: e.data()['active'],
 
-
       );
 
     }).toList();
@@ -48,7 +47,7 @@ class ItemService {
       rent: snapshot.data()['Rent'],
       url: snapshot.data()['Image'],
       active: snapshot.data()['active'],
-
+        description: List.from(snapshot.data()['Description'])
 
     ) : null;
   }
@@ -65,10 +64,7 @@ class ItemService {
     }
   }
 
-  Future disableItem() async {
-    //try{return await  _reference.doc(itemname).delete();}catch(e){print(e.toString());}
 
-  }
 
   Future updateitem(String url, int rent, String productname,
       File image) async {
@@ -78,6 +74,7 @@ class ItemService {
 
           'Rent': rent,
           'Image': url,
+
 
 
         });
@@ -161,5 +158,15 @@ class ItemService {
     }
   }
 
+  Future addDescriptionElement(String element)async {
+    await FirebaseFirestore.instance.collection('Item').doc(itemname).update({
+      'Description': FieldValue.arrayUnion([element]),
+    });
+  }
+  Future deleteDescriptionElement(String element)async{
+    await FirebaseFirestore.instance.collection('Item').doc(itemname).update({
+      'Description':FieldValue.arrayRemove([element]),
+    });
+  }
 
 }

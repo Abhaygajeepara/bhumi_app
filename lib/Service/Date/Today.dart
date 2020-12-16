@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TOdayORDERS{
   Timestamp start;
 
+
   TOdayORDERS({this.start});
   final CollectionReference _orderreference = FirebaseFirestore.instance.collection('Order');
 
@@ -34,7 +35,7 @@ class TOdayORDERS{
   Stream<List<ItemHistoryModel>> get ITEMHISTORY {
     try {
       return _orderreference.where(
-          'Pickup',isGreaterThan: start).snapshots().map(itemhistory);
+          'Pickup',isEqualTo: start).snapshots().map(itemhistory);
     }
     catch (e) {
       print(e.toString());
